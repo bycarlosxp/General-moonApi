@@ -5,8 +5,8 @@ const connection = await mysql.createConnection({
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'Loki_2903',
-    database: 'moondb'
+    password: 'kira',
+    database: 'mooondb'
 })
 
 if (!connection) {
@@ -28,6 +28,41 @@ export class MySQLModel {
             throw new Error('Invalid table name')
         }
         return connection.execute(`SELECT * FROM \`${table}\``)
+    }
+
+    static getInvoices(table) {
+        if (!/^[A-Za-z0-9_]+$/.test(table)) {
+            throw new Error('Invalid table name')
+        }
+        return connection.execute(`SELECT * FROM \`${table}\` INNER JOIN invoice_details ON invoice.invoice_id = invoice_details.invoice_id`)
+    }
+
+    static getbyId(table, id) {
+        if (!/^[A-Za-z0-9_]+$/.test(table)) {
+            throw new Error('Invalid table name')
+        }
+        return connection.execute(`SELECT * FROM \`${table}\` WHERE id = ?`, [id])
+    }
+
+    static create(table, data) {
+        if (!/^[A-Za-z0-9_]+$/.test(table)) {
+            throw new Error('Invalid table name')
+        }
+        return connection.execute(`INSERT INTO \`${table}\` SET ?`, [data])
+    }
+
+    static update(table, id, data) {
+        if (!/^[A-Za-z0-9_]+$/.test(table)) {
+            throw new Error('Invalid table name')
+        }
+        return connection.execute(`UPDATE \`${table}\` SET ? WHERE id = ?`, [data, id])
+    }
+    
+    static delete(table, id) {
+        if (!/^[A-Za-z0-9_]+$/.test(table)) {
+            throw new Error('Invalid table name')
+        }
+        return connection.execute(`DELETE FROM \`${table}\` WHERE id = ?`, [id])
     }
 }
 
